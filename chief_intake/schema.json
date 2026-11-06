@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["readable", "unreadable_reason", "kind", "title", "sender", "summary", "amount_due", "due_date", "penalty_date", "reference", "contact", "owner", "first_step", "note_hunch"],
+  "properties": {
+    "readable": {"type": "boolean"},
+    "unreadable_reason": {"type": ["string", "null"]},
+    "kind": {"type": "string"},
+    "title": {"type": "string"},
+    "sender": {"type": ["string", "null"]},
+    "summary": {"type": "string"},
+    "amount_due": {"type": ["string", "null"]},
+    "due_date": {"type": ["string", "null"], "pattern": "^\\d{4}-\\d{2}-\\d{2}$"},
+    "penalty_date": {"type": ["string", "null"], "pattern": "^\\d{4}-\\d{2}-\\d{2}$"},
+    "reference": {"type": ["string", "null"]},
+    "contact": {"type": ["string", "null"]},
+    "owner": {"type": "string"},
+    "first_step": {"type": "string"},
+    "note_hunch": {"type": ["string", "null"]}
+  }
+}

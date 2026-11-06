@@ -7,6 +7,6 @@ build/
 dist/
 .DS_Store
 # Never commit real data or local config
-config.toml
+/config.toml
 *.local.toml
 /out/

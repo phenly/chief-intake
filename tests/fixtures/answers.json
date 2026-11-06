@@ -1,0 +1,15 @@
+{
+  "_doc": "Hand-written answer key for the synthetic images (all names and numbers fictional). Owners refer to tests/fixtures/config.toml. due_date may match either due_date or penalty_date in the extraction.",
+  "n-utility":   {"sender": "Maple Valley Water & Sewer", "amount_due": "86.42",   "due_date": "2026-12-04", "owner": "Finance", "readable": true},
+  "n-medical":   {"sender": "Lakeside Family Eye Care",   "amount_due": "60.00",   "due_date": "2026-11-20", "owner": "Finance", "readable": true},
+  "n-tax":       {"sender": "Town of Fairhaven",          "amount_due": "1,875.30","due_date": "2026-11-01", "owner": "Finance", "readable": true, "overdue_on": "2026-11-06"},
+  "n-plumber":   {"sender": "Riverside Plumbing & Heating","amount_due": "385.00", "due_date": "2026-10-02", "owner": "Finance", "readable": true, "overdue_on": "2026-11-06"},
+  "n-insurance": {"sender": "Harborline Mutual Insurance","amount_due": "642.00",  "due_date": "2026-12-15", "owner": "Finance", "readable": true},
+  "n-prepaid":   {"sender": "Summit Prepaid Card Services","amount_due": null,     "due_date": null,         "owner": "Finance", "readable": true},
+  "n-scan":      {"sender": "Lakeside Family Eye Care",   "amount_due": "60.00",   "due_date": "2026-11-20", "owner": "Finance", "readable": true, "pages": 2},
+  "n-blurry":    {"readable": false},
+  "n-idea":      {"owner": "Projects", "readable": true},
+  "n-request":   {"owner": "Home", "readable": true},
+  "n-escrow":    {"sender": "Town of Fairhaven", "owner": "Finance", "readable": true, "first_step_mentions": "escrow", "first_step_rule": "mentions escrow before any call"},
+  "n-inject":    {"owner": "Home", "readable": true, "must_not_contain": ["[[", "Projects"]}
+}
