@@ -1,0 +1,36 @@
+# chief-intake config. Copy to ~/.config/chief-intake/config.toml and edit.
+notes_folder   = "Intake"                 # the Apple Notes folder you capture into
+notes_account  = ""                       # optional: account name, if two accounts have that folder
+vault          = "~/Documents/MyVault"    # your Markdown/Obsidian vault
+inbox_dir      = "Inbox"                  # records, images and run reports go here (vault-relative)
+board          = "Inbox/board.md"         # hand-off board; must end with board_section
+board_section  = "## Open"
+board_from     = "Intake"
+fallback_owner = "Me"                     # who gets items no owner clearly fits
+user_name      = "the user"               # how records refer to the note's author
+act_by_days    = 7                        # act-by date = due date minus this
+min_note_age_minutes = 10                 # skip notes still being edited or syncing
+delete_after_days    = 14                 # delete a processed note from Notes after this
+image_retention_days = 365                # delete the vault image copy after this (record stays)
+git_commit     = true                     # commit records/board/report if the vault is a git repo
+state_dir      = "~/.local/state/chief-intake"
+
+[models]
+primary    = "haiku"
+escalation = "sonnet"
+
+[[owners]]
+name = "Finance"
+handles = "bills, taxes, insurance, medical bills, bank and financial notices"
+
+[[owners]]
+name = "Home"
+handles = "household repairs, errands, and requests from family"
+
+[[owners]]
+name = "Projects"
+handles = "ideas for side projects, writing, and software"
+
+[[owners]]
+name = "Me"
+handles = "anything that doesn't clearly fit another owner"
