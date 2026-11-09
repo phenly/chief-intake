@@ -137,7 +137,8 @@ def print_setup_instructions(app: launcher.AppResult) -> str:
                   f'Full Disk Access, turn on "{launcher.APP_NAME}" (click + and choose the app above if it is not listed).',
                   "If an older entry for the same app is listed, remove it first."]
     else:
-        lines.append("The app is unchanged, so existing permission grants still apply.")
+        lines.append(f'The app is unchanged, so any grant you already gave it still applies. If "{launcher.APP_NAME}" '
+                     "is not on in System Settings > Privacy & Security > Full Disk Access, turn it on.")
     lines += ["Then run chief-intake schedule test while at the Mac and approve the prompt for "
               f'"{launcher.APP_NAME}" to control Notes.',
               "Check chief-intake doctor for the LaunchAgent preflight result.",
