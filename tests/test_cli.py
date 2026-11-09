@@ -46,7 +46,7 @@ def test_status_json_and_doctor_format(setup, monkeypatch, capsys):
     cli.report.write_last_run(cfg.state_dir, {'success': True, 'trigger': 'preflight', 'preflight': True})
     assert cli.doctor(cfg, source, control, git, lambda a: CompletedProcess(a, 0)) == 0
     lines = capsys.readouterr().out.splitlines()
-    assert len(lines) == 8 and all(line.startswith('PASS ') and ' — ' in line for line in lines)
+    assert len(lines) == 9 and all(line.startswith('PASS ') and ' — ' in line for line in lines)
     monkeypatch.setattr(cli.shutil, 'which', lambda _: None)
     assert cli.doctor(cfg, source, control, git, lambda a: CompletedProcess(a, 1)) == 1
     assert 'FAIL claude on PATH — Install' in capsys.readouterr().out
@@ -77,9 +77,13 @@ def test_preflight_only_even_on_failure(setup, monkeypatch, failure, capsys):
 def test_schedule_wiring(setup, monkeypatch, action, capsys):
     calls = []
     function = {'install': 'install', 'print': 'render_plist', 'remove': 'remove', 'test': 'test_kickstart'}[action]
-    monkeypatch.setattr(cli.schedule, function, lambda *a, **kw: (calls.append(a) or 'synthetic'))
+    app = cli.launcher.AppResult(Path('/synthetic/Chief Intake.app'), rebuilt=True)
+    result = {'install': cli.schedule.Installed(Path('/synthetic/job.plist'), app), 'test': app}.get(action, 'synthetic')
+    monkeypatch.setattr(cli.schedule, function, lambda *a, **kw: (calls.append(a) or result))
     assert cli.main(['schedule', action]) == 0
     assert calls[0][0] == setup[0]
+    if action in ('install', 'test'):
+        assert 'Chief Intake' in capsys.readouterr().out
 
 
 def test_cleanup_dry_run_and_config_error(setup, monkeypatch, capsys):

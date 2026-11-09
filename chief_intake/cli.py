@@ -11,7 +11,7 @@ from dataclasses import asdict
 from datetime import datetime
 from pathlib import Path
 
-from . import cleanup, config, pipeline, report, schedule
+from . import cleanup, config, launcher, pipeline, report, schedule
 from .extract import ClaudeCLIExtractor
 from .models import NotesControl, NotesSource
 from .notes_control import AppleScriptNotesControl
@@ -97,15 +97,17 @@ def doctor(cfg: config.Config, source: NotesSource, control: NotesControl,
            git: GitVault, runner=pipeline.command_runner) -> int:
     checks = [
         ('config', lambda: True, 'Copy and edit config.example.toml.'),
-        ('notes read', lambda: source.list_notes() is not None, 'Grant Full Disk Access to the resolved Python binary; check folder/account.'),
+        ('notes read', lambda: source.list_notes() is not None, 'Doctor runs as your terminal: grant the terminal app Full Disk Access; check folder/account.'),
         ('vault writable', lambda: (probe_vault(cfg) or True), 'Create the inbox and grant Python access to the vault.'),
         ('claude on PATH', lambda: bool(shutil.which('claude')), 'Install Claude Code CLI, add it to PATH and log in.'),
         ('Notes automation', lambda: control.folder_count(cfg.notes_folder) >= 0, 'Run schedule test and approve control Notes.'),
         ('git repo', git.is_repo, 'Initialize the vault git repository.'),
+        ('launcher app', lambda: runner(['codesign', '--verify', '--strict', str(launcher.app_path())]).returncode == 0,
+         'Run chief-intake schedule install to build and sign the Chief Intake app.'),
         ('schedule loaded', lambda: runner(['launchctl', 'print', f'gui/{os.getuid()}/{schedule.default_label()}']).returncode == 0,
          'Run chief-intake schedule install.'),
         ('last scheduled run outcome', lambda: bool((last_run(cfg, scheduled=True) or {}).get('success')),
-         'Run schedule test; inspect last-run.json and grant the resolved Python binary Full Disk Access again after upgrades.'),
+         'Run schedule test; turn on "Chief Intake" in Full Disk Access, approve its Notes prompt, inspect last-scheduled-run.json.'),
     ]
     passed = True
     for name, check, hint in checks:
@@ -190,14 +192,17 @@ def main(argv: list[str] | None = None) -> int:
                     return int(bool(errors))
         runner = pipeline.command_runner
         if args.action == 'print':
-            print(schedule.render_plist(cfg, sys.executable, selected_config=config.config_path(args.config).resolve()))
+            print(schedule.render_plist(cfg, launcher.executable_path(launcher.app_path())))
         elif args.action == 'install':
-            print(schedule.install(cfg, runner, selected_config=config.config_path(args.config).resolve()))
-            print(schedule.print_setup_instructions(sys.executable))
+            installed = schedule.install(cfg, runner, selected_config=config.config_path(args.config).resolve())
+            print(installed.plist)
+            print(schedule.print_setup_instructions(installed.app))
         elif args.action == 'remove':
             schedule.remove(cfg, runner)
         else:
-            schedule.test_kickstart(cfg, runner, selected_config=config.config_path(args.config).resolve())
+            app = schedule.test_kickstart(cfg, runner, selected_config=config.config_path(args.config).resolve())
+            if app.rebuilt:
+                print(schedule.print_setup_instructions(app))
             print('Preflight requested. Check status or doctor for the result.')
         return 0
     except AlreadyRunning:

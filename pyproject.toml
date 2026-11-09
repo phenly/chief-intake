@@ -21,7 +21,7 @@ chief-intake = "chief_intake.cli:main"
 packages = ["chief_intake"]
 
 [tool.setuptools.package-data]
-chief_intake = ["prompt.md", "schema.json"]
+chief_intake = ["prompt.md", "schema.json", "launcher.swift"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
